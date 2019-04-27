@@ -1,0 +1,43 @@
+{
+  "name": "hcp-api",
+  "description": "api for the harmony connection platform",
+  "version": "0.1.0",
+  "scripts": {
+    "lint": "eslint src",
+    "test:dev": "cross-env NODE_ENV=development mocha --require @babel/register tests/*.spec.js --exit",
+    "test:ci": "cross-env NODE_ENV=ci mocha --require @babel/register tests/*.spec.js --exit",
+    "build": "npx babel src --out-dir dist",
+    "dev": "cross-env NODE_ENV=development nodemon --exec babel-node src",
+    "migrate:list": "cross-env NODE_ENV=development migrate list --compiler=\"js:@babel/register\"",
+    "migrate:latest": "cross-env NODE_ENV=development migrate up --compiler=\"js:@babel/register\"",
+    "migrate:clear": "cross-env NODE_ENV=development migrate down --compiler=\"js:@babel/register\""
+  },
+  "engines": {
+    "node": "8"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "firebase-admin": "~7.0.0",
+    "firebase-functions": "^2.2.0",
+    "hapi": "^18.1.0",
+    "migrate": "^1.6.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.12.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.18.11"
+  },
+  "private": true
+}
