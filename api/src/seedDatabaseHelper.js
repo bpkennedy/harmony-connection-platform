@@ -54,6 +54,24 @@ export const clearDatabase = async (db) => {
   }
 }
 
+export const updateBatch = async (database, collectionName, updateSets) => {
+  let batch = database.batch()
+  for (const updateSet of updateSets) {
+    const ref = database.collection(collectionName).doc(updateSet.id)
+    batch.set(ref, updateSet) 
+  }
+  await batch.commit() //eslint-disable-line no-await-in-loop
+}
+
+export const getBatch = async (database, collectionName) => {
+  const items = []
+  const ref = await database.collection(collectionName).get()
+  ref.forEach(doc => {
+    items.push(doc.data())
+  })
+  return items
+}
+
 function deleteCollection(db, collectionPath, batchSize) {
   var collectionRef = db.collection(collectionPath)
   var query = collectionRef.orderBy('__name__').limit(batchSize)
