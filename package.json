@@ -5,9 +5,10 @@
   "scripts": {
     "install": "bash ./scripts/installDeps.sh",
     "build": "bash ./scripts/build.sh",
-    "start": "npm run serveApi",
-    "serveApi": "cd ./api && npm run dev && cd -",
-    "serveAdmin": "cd ./admin && npm run serve && cd -",
+    "start": "npm run serve:api:ci",
+    "serve:api": "cd ./api && npm run dev && cd -",
+    "serve:api:ci": "cd ./api && npm run serve && cd -",
+    "serve:admin": "cd ./admin && npm run serve && cd -",
     "test": "bash ./scripts/test.sh",
     "lint": "bash ./scripts/lint.sh",
     "clean": "rm -rf ./admin/node_modules && rm -rf ./api/node_modules"
@@ -15,9 +16,7 @@
   "engines": {
     "node": "8"
   },
-  "dependencies": {
-    "@vue/cli": "^3.6.3"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "private": false
 }
