@@ -6,7 +6,7 @@
     "install": "bash ./scripts/installDeps.sh",
     "clean": "rm -rf ./admin/node_modules && rm -rf ./api/node_modules",
     "serveApi": "cd ./api && npm run dev && cd -",
-    "serveUi": "cd ./ui && npm run serve && cd -",
+    "serveAdmin": "cd ./admin && npm run serve && cd -",
     "test": "bash ./scripts/test.sh",
     "lint": "bash ./scripts/lint.sh"
   },

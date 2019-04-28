@@ -11,8 +11,8 @@ else
   echo -e "${RED}API lint failed${NC}"
 fi
 
-# if (cd ./admin && npm run lint && cd -) || exit 1 ; then
-#   echo -e "${GREEN}Admin lint all set!${NC}"
-# else
-#   echo -e "${RED}Admin lint failed${NC}"
-# fi
+if (cd ./admin && npm run lint && cd -) || exit 1 ; then
+  echo -e "${GREEN}Admin lint all set!${NC}"
+else
+  echo -e "${RED}Admin lint failed${NC}"
+fi
