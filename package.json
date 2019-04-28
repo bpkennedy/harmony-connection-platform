@@ -15,7 +15,9 @@
   "engines": {
     "node": "8"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@vue/cli": "^3.6.3"
+  },
   "devDependencies": {},
   "private": false
 }

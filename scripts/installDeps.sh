@@ -4,6 +4,12 @@ RED='\033[0;31m'
 GREEN='\033[1;32m'
 NC='\033[0m' # No Color
 
+if (npm install) || exit 1 ; then
+echo -e "${GREEN}Global dependencies installed${NC}"
+else
+  echo -e "${RED}Global dependencies failed to install${NC}"
+fi
+
 if (cd ./api && npm install && cd -) || exit 1 ; then
 echo -e "${GREEN}API dependencies installed${NC}"
 else
