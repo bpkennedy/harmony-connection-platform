@@ -1,7 +1,7 @@
 {
   "name": "hcp-api",
   "description": "api for the harmony connection platform",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "lint": "eslint src",
     "test": "cross-env NODE_ENV=development mocha --require @babel/register tests/*.spec.js --exit",

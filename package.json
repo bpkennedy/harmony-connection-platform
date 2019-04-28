@@ -1,14 +1,16 @@
 {
   "name": "hcp",
   "description": "A platform that connects people together for shared life with God and each other. Created for the Harmony Methodist United Church in St. Louis.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "install": "bash ./scripts/installDeps.sh",
-    "clean": "rm -rf ./admin/node_modules && rm -rf ./api/node_modules",
+    "build": "bash ./scripts/buildStaging.sh",
+    "start": "npm run serveApi",
     "serveApi": "cd ./api && npm run dev && cd -",
     "serveAdmin": "cd ./admin && npm run serve && cd -",
     "test": "bash ./scripts/test.sh",
-    "lint": "bash ./scripts/lint.sh"
+    "lint": "bash ./scripts/lint.sh",
+    "clean": "rm -rf ./admin/node_modules && rm -rf ./api/node_modules"
   },
   "engines": {
     "node": "8"

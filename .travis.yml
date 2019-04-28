@@ -1,4 +1,6 @@
 language: node_js
+before_install:
+  - rvm install 2.1.5
 node_js:
   - "8"
 cache:
@@ -14,17 +16,21 @@ jobs:
     - stage: lint
       before_install:
       - chmod +x ./scripts/installDeps.sh
-      - ./scripts/installDeps.sh
-      script:
       - chmod +x ./scripts/lint.sh
+      script:
       - ./scripts/lint.sh
     - stage: test
       before_install:
       - chmod +x ./scripts/installDeps.sh
-      - ./scripts/installDeps.sh
-      script:
       - chmod +x ./scripts/testCi.sh
+      script:
       - ./scripts/testCi.sh
+    - stage: deployStaging
+      before_install:
+      - chmod +x ./scripts/installDeps.sh
+      - chmod +x ./scripts/buildStaging.sh
+      script:
+      - ./scripts/buildStaging.sh
       
 # after_success:
 #   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
