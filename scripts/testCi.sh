@@ -11,13 +11,13 @@ else
   echo -e "${RED}API unit tests failed${NC}"
 fi
 
-if (cd ./admin && npm run test:unit && cd -) || exit 1 ; then
+if (cd ./admin && npm run test:unit:ci && cd -) || exit 1 ; then
   echo -e "${GREEN}Admin unit tests successful${NC}"
 else
   echo -e "${RED}Admin unit tests failed${NC}"
 fi
 
-if (cd ./admin && npm run test:e2e:headless && cd -) || exit 1 ; then
+if (cd ./admin && npm run test:e2e:ci && cd -) || exit 1 ; then
   echo -e "${GREEN}Admin UAT tests successful${NC}"
 else
   echo -e "${RED}Admin UAT tests failed${NC}"

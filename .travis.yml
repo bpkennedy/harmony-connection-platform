@@ -1,0 +1,36 @@
+language: node_js
+node_js:
+  - "8"
+cache:
+  # Caches $HOME/.npm when npm ci is default script command
+  # Caches node_modules in all other cases
+  npm: true
+  directories:
+    # we also need to cache folder with Cypress binary
+    - ~/.cache
+
+jobs:
+  include:
+    - stage: lint
+      before_install:
+      - chmod +x ./scripts/installDeps.sh
+      - ./scripts/installDeps.sh
+      script:
+      - chmod +x ./scripts/lint.sh
+      - ./scripts/lint.sh
+    - stage: test
+      before_install:
+      - chmod +x ./scripts/installDeps.sh
+      - ./scripts/installDeps.sh
+      script:
+      - chmod +x ./scripts/testCi.sh
+      - ./scripts/testCi.sh
+      
+# after_success:
+#   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+#   - chmod +x send.sh
+#   - ./send.sh success $WEBHOOK_URL
+# after_failure:
+#   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+#   - chmod +x send.sh
+#   - ./send.sh failure $WEBHOOK_URL

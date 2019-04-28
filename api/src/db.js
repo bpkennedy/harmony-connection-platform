@@ -4,7 +4,7 @@ let firebaseAppInstance
 export let database
 
 export const initializeDb = (callback) => {
-  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'ci') {
+  if (process.env.NODE_ENV === 'development') {
     const serviceAccount = require('../dev-firebase-security.json')
     firebaseAppInstance = admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
