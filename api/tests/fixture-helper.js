@@ -29,6 +29,7 @@ export function setupTest(test) {
   })
 
   after(async () => {
+    await helper.seedDatabase(db)
     require('../src/index.js').stop()
     db = null
     helper = null

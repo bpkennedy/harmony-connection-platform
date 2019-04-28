@@ -9,7 +9,7 @@ export class FirebaseMigrationStore {
       resultSnap.forEach((doc) => {
         results.push(doc.data())
       })
-      if (results.length > 1) {
+      if (results.length > 0) {
         return callback(null, results[0])
       }
       console.log('No migrations found.')

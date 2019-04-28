@@ -51,9 +51,10 @@ initializeDb(db => {
     }
     await set.up(err => {
       if (err) {
+        console.log('Migrations failed to run')
+        console.log(err)
         throw err
       }
-      console.log('Migrations successfully ran.')
     })
   })
 })
