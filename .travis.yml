@@ -25,12 +25,12 @@ jobs:
       - chmod +x ./scripts/testCi.sh
       script:
       - ./scripts/testCi.sh
-    - stage: deployStaging
+    - stage: build
       before_install:
       - chmod +x ./scripts/installDeps.sh
-      - chmod +x ./scripts/buildStaging.sh
+      - chmod +x ./scripts/build.sh
       script:
-      - ./scripts/buildStaging.sh
+      - ./scripts/build.sh
       
 # after_success:
 #   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh

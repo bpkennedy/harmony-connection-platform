@@ -1,18 +1,22 @@
 import express from 'express'
+import path from 'path'
+import history from 'connect-history-api-fallback'
 import bodyParser from 'body-parser'
 const migrate = require('migrate')
 import { initializeDb, deleteFirestore } from './db'
 import { FirebaseMigrationStore } from './migrate-store'
 
-const app = express()
 const port = process.env.PORT || 3000
+const directory = path.join(__dirname, '..', 'public')
+const app = express()
+
 export let database
 
 initializeDb(db => {
   // app.use('/api', routes(db, logger))
   // View all ships
   database = db
-  
+
   app.get('/pages', async (req, res) => {
     let pages = []
     try {
@@ -58,6 +62,15 @@ const main = express()
 main.use('/api/v1', app)
 main.use(bodyParser.json())
 main.use(bodyParser.urlencoded({ extended: false }))
+
+let staticFileMiddleware = express.static(directory)
+main.use(staticFileMiddleware)
+main.use(history())
+main.use(staticFileMiddleware)
+// needs to be called twice per https://github.com/bripkens/connect-history-api-fallback/tree/master/examples/static-files-and-index-rewrite
+main.get('/', (req, res) => {
+  res.render(directory + '/index.html')
+})
 
 const startup = () => {
   return main.listen(port, () => {
