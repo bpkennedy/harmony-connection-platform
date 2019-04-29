@@ -1,19 +1,23 @@
 import express from 'express'
 
-export default (db, collectionName) => {
+export const createREST = (db, collectionName) => {
 
   // ======
   // Create
   // ======
   const create = async (req, res) => {
-    const newEntry = req.body;
+    const newEntry = req.body
     try {
-      const ref = await db.collection[collectionName].add(newEntry)
-      const addedEntry = await db.collection[collectionName].get(ref.id)
-      res.send(addedEntry).status(201) 
+      const ref = await db.collection(collectionName).add(newEntry)
+      await db.collection(collectionName).doc(ref.id).update({ id: ref.id })
+      const addedEntry = await db.collection(collectionName).doc(ref.id).get()
+      if (!addedEntry.exists) {
+        throw new Error('Item not found.')
+      }
+      res.status(201).send(addedEntry.data())
     } catch(error) {
       console.log(error)
-      res.send(error).status(400)
+      res.status(400).send(error)
     }
   };
   
@@ -23,14 +27,14 @@ export default (db, collectionName) => {
   const readAll = async (req, res) => {
     const allItems = []
     try {
-      const snapshot = db.collection[collectionName].get()
+      const snapshot = await db.collection(collectionName).where('deleted', '==', false).get()
       snapshot.forEach(doc => {
         allItems.push(doc.data())
       })
-      res.send(allItems).status(200)
+      res.status(200).send(allItems)
     } catch(error) {
       console.log(error)
-      res.send(error).status(400)
+      res.status(400).send(error)
     }
   };
 
@@ -40,11 +44,18 @@ export default (db, collectionName) => {
   const readOne = async (req, res) => {
     const { id } = req.params;
     try {
-      const item = db.collection[collectionName].get(id)
-      res.send(item).status(200)
+      const allItems = []
+      const snapshot = await db.collection(collectionName).where('id', '==', id).where('deleted', '==', false).get()
+      snapshot.forEach(doc => {
+        allItems.push(doc.data())
+      })
+      if (!allItems[0]) {
+        throw new Error('Item not found.')
+      }
+      res.status(200).send(allItems[0])
     } catch(error) {
       console.log(error)
-      res.send(error).status(400)
+      res.status(400).send(error)
     }
   };
   
@@ -52,14 +63,18 @@ export default (db, collectionName) => {
   // Update
   // ======
   const update = async (req, res) => {
+    const { id } = req.params
     const changedEntry = req.body
     try {
-      const ref = await db.collection[collectionName].doc(req.body.id).update(changedEntry)
-      const updatedEntry = await db.collection[collectionName].get(ref.id)
-      res.send(updatedEntry).status(200)
+      await db.collection(collectionName).doc(id).update(changedEntry)
+      const updatedEntry = await db.collection(collectionName).doc(id).get()
+      if (!updatedEntry.exists) {
+        throw new Error('Item does not exist.')
+      }
+      res.status(200).send(updatedEntry.data())
     } catch(error) {
       console.log(error)
-      res.send(error).status(400)
+      res.status(400).send(error)
     }
   };
   
@@ -69,11 +84,11 @@ export default (db, collectionName) => {
   const remove = async (req, res) => {
     const { id } = req.params
     try {
-      await db.collection[collectionName].doc(id).delete()
-      res.send('successful deletion').status(200)
+      await db.collection(collectionName).doc(id).update({ deleted: true })
+      res.status(200).send('successful deletion')
     } catch(error) {
       console.log(error)
-      res.send(error).status(400)
+      res.status(400).send(error)
     }
   };
 

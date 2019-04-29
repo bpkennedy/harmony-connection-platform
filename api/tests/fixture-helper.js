@@ -3,15 +3,15 @@ import axios from 'axios'
 const apiPath = 'http://localhost:3000/api/v1/'
 
 export async function apiGet(path) {
-  return axios.get(apiPath + path)
+  return await axios.get(apiPath + path)
 }
 
 export async function apiPost(path, body) {
-  return axios.post(apiPath + path, {body})
+  return await axios.post(apiPath + path, body)
 }
 
 export async function apiPut(path, body) {
-  return axios.put(apiPath + path, {body})
+  return await axios.put(apiPath + path, body)
 }
 
 export async function apiDelete(path) {

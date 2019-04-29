@@ -5,6 +5,7 @@ import bodyParser from 'body-parser'
 const migrate = require('migrate')
 import { initializeDb, deleteFirestore } from './db'
 import { FirebaseMigrationStore } from './migrate-store'
+import { createREST } from './restGenerator'
 
 const port = process.env.PORT || 3000
 const directory = path.join(__dirname, '..', 'public')
@@ -13,48 +14,14 @@ const app = express()
 export let database
 
 initializeDb(db => {
-  // app.use('/api', routes(db, logger))
-  // View all ships
   database = db
-
-  app.get('/pages', async (req, res) => {
-    let pages = []
-    try {
-      const pagesSnapshot = await db.collection('pages').get()
-      pagesSnapshot.forEach(doc => {
-        pages.push(doc.data())
-      })
-      res.status(200).send(pages)
-    } catch(error) {
-      res.status(400).send(error)
-    }
-  })
   
-  app.get('/activities', async (req, res) => {
-    let activities = []
-    try {
-      const activitiesSnapshot = await db.collection('activities').get()
-      activitiesSnapshot.forEach(doc => {
-        activities.push(doc.data())
-      })
-      res.status(200).send(activities)
-    } catch(error) {
-      res.status(400).send(error)
-    }
-  })
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: false }))
   
-  app.get('/users', async (req, res) => {
-    let users = []
-    try {
-      const usersSnapshot = await db.collection('users').get()
-      usersSnapshot.forEach(doc => {
-        users.push(doc.data())
-      })
-      res.status(200).send(users)
-    } catch(error) {
-      res.status(400).send(error)
-    }
-  })
+  app.use('/pages', createREST(db, 'pages'))
+  app.use('/activities', createREST(db, 'activities'))
+  app.use('/users', createREST(db, 'users'))
   
   migrate.load({
     stateStore: new FirebaseMigrationStore(db),
@@ -74,8 +41,8 @@ initializeDb(db => {
 
 const main = express()
 main.use('/api/v1', app)
-main.use(bodyParser.json())
-main.use(bodyParser.urlencoded({ extended: false }))
+// main.use(bodyParser.json())
+// main.use(bodyParser.urlencoded({ extended: false }))
 
 let staticFileMiddleware = express.static(directory)
 main.use(staticFileMiddleware)
