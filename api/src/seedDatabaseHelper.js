@@ -8,6 +8,7 @@ const seedPages = [
     modified_by: '1234',
     modified_at: new Date(),
     deleted: false,
+    version: 1,
   },
 ]
 
@@ -18,26 +19,74 @@ const seedUsers = [
     last_name: 'Kennedy',
     email: 'bpkennedy@gmail.com',
     role: 'admin',
-    profile_image_url:
-      'https://steamuserimages-a.akamaihd.net/ugc/918053186553065192/F20C63A555E64AAE971975AFA2B3BA3B227CD080/?imw=268&imh=268&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true',
-    serving: ['nursery', 'servecomm', 'sound', 'slides', 'greet', 'coffeecommprep', 'elementary', 'prek', 'moneycount']
+    profile_image_url: 'https://steamuserimages-a.akamaihd.net/ugc/918053186553065192/F20C63A555E64AAE971975AFA2B3BA3B227CD080/?imw=268&imh=268&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true',
+    serving: ['1234', '1235', '1236', '1237', '1238', '1239', '12320', '12321', '12322'],
+    version: 1,
   }
+]
+
+const seedActivities = [
+  {
+    id: '1234',
+    name: 'nursery',
+    display: 'Nursery',
+    version: 1,
+  },
+  {
+    id: '1235',
+    name: 'servecomm',
+    display: 'Serve Communion',
+    version: 1,
+  },
+  {
+    id: '1236',
+    name: 'sound',
+    display: 'Sound',
+    version: 1,
+  },
+  {
+    id: '1237',
+    name: 'slides',
+    display: 'Slides',
+    version: 1,
+  },
+  {
+    id: '1238',
+    name: 'greet',
+    display: 'Greet',
+    version: 1,
+  },
+  {
+    id: '1239',
+    name: 'coffeecommprep',
+    display: 'Coffee & Communion Prep',
+    version: 1,
+  },
+  {
+    id: '12320',
+    name: 'elementary',
+    display: 'Elementary',
+    version: 1,
+  },
+  {
+    id: '12321',
+    name: 'prek',
+    display: 'Pre-K',
+    version: 1,
+  },
+  {
+    id: '12322',
+    name: 'moneycount',
+    display: 'Money Counting',
+    version: 1,
+  },
 ]
 
 export const seedDatabase = async (db) => {
   try {
-    for (const page of seedPages) {
-      let batch = db.batch()
-      const pageRef = db.collection('pages').doc(page.id)
-      batch.set(pageRef, page)
-      await batch.commit() //eslint-disable-line no-await-in-loop
-    }
-    for (const user of seedUsers) {
-      let batch = db.batch()
-      const userRef = db.collection('users').doc(user.id)
-      batch.set(userRef, user)
-      await batch.commit() //eslint-disable-line no-await-in-loop
-    }
+    await updateBatch(db, 'pages', seedPages)
+    await updateBatch(db, 'activities', seedActivities)
+    await updateBatch(db, 'users', seedUsers)
   } catch (error) {
     console.log(error)
     throw error
@@ -47,6 +96,7 @@ export const seedDatabase = async (db) => {
 export const clearDatabase = async (db) => {
   try {
     await deleteCollection(db, 'pages', 100)
+    await deleteCollection(db, 'activities', 100)
     await deleteCollection(db, 'users', 100)
   } catch (error) {
     console.log(error)

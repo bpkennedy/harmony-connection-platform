@@ -30,6 +30,19 @@ initializeDb(db => {
     }
   })
   
+  app.get('/activities', async (req, res) => {
+    let activities = []
+    try {
+      const activitiesSnapshot = await db.collection('activities').get()
+      activitiesSnapshot.forEach(doc => {
+        activities.push(doc.data())
+      })
+      res.status(200).send(activities)
+    } catch(error) {
+      res.status(400).send(error)
+    }
+  })
+  
   app.get('/users', async (req, res) => {
     let users = []
     try {
