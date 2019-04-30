@@ -14,7 +14,7 @@ let sampleUser =   {
   role: 'admin',
   profile_image_url: 'https://steamuserimages-a.akamaihd.net/ugc/918053186553065192/F20C63A555E64AAE971975AFA2B3BA3B227CD080/?imw=268&imh=268&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true',
   serving: ['1234', '1235', '1236', '1237', '1238', '1239', '12320', '12321', '12322'],
-  deleted: false,
+  is_active: true,
   version: 1,
 }
 
@@ -35,7 +35,9 @@ describe('Users', function () {
     
     const response2 = await apiGet('users/' + newUserId)
     expect(response2.status).to.eql(200)
-    expect(response2.data).to.eql({ ...sampleUser, id: newUserId })
+    expect(response2.data.first_name).to.eql(sampleUser.first_name)
+    expect(response2.data.last_name).to.eql(sampleUser.last_name)
+    expect(response2.data.is_active).to.eql(sampleUser.is_active)
   })
   
   it('should update existing page', async () => {

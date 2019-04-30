@@ -14,7 +14,7 @@ let samplePage = {
   created_at: new Date().toISOString(),
   modified_by: '1234',
   modified_at: new Date().toISOString(),
-  deleted: false,
+  is_active: true,
   version: 1,
 }
 
@@ -35,7 +35,9 @@ describe('Pages', function () {
     
     const response2 = await apiGet('pages/' + newPageId)
     expect(response2.status).to.eql(200)
-    expect(response2.data).to.eql({ ...samplePage, id: newPageId })
+    expect(response2.data.title).to.eql(samplePage.title)
+    expect(response2.data.content).to.eql(samplePage.content)
+    expect(response2.data.is_active).to.eql(samplePage.is_active)
   })
   
   it('should update existing page', async () => {

@@ -1,4 +1,5 @@
 import express from 'express'
+import admin from 'firebase-admin'
 
 export const createREST = (db, collectionName) => {
 
@@ -6,15 +7,16 @@ export const createREST = (db, collectionName) => {
   // Create
   // ======
   const create = async (req, res) => {
-    const newEntry = req.body
+    const newEntry = { 
+      ...req.body,
+      created_at: admin.firestore.FieldValue.serverTimestamp(),
+      modified_at: admin.firestore.FieldValue.serverTimestamp(),
+    }
     try {
       const ref = await db.collection(collectionName).add(newEntry)
-      await db.collection(collectionName).doc(ref.id).update({ id: ref.id })
-      const addedEntry = await db.collection(collectionName).doc(ref.id).get()
-      if (!addedEntry.exists) {
-        throw new Error('Item not found.')
-      }
-      res.status(201).send(addedEntry.data())
+      await updateWithId(db, collectionName, ref.id)
+      const newItem = await findItemById(db, collectionName, ref.id)
+      res.status(201).send(newItem)
     } catch(error) {
       console.log(error)
       res.status(400).send(error)
@@ -27,7 +29,7 @@ export const createREST = (db, collectionName) => {
   const readAll = async (req, res) => {
     const allItems = []
     try {
-      const snapshot = await db.collection(collectionName).where('deleted', '==', false).get()
+      const snapshot = await db.collection(collectionName).where('is_active', '==', true).get()
       snapshot.forEach(doc => {
         allItems.push(doc.data())
       })
@@ -44,15 +46,8 @@ export const createREST = (db, collectionName) => {
   const readOne = async (req, res) => {
     const { id } = req.params;
     try {
-      const allItems = []
-      const snapshot = await db.collection(collectionName).where('id', '==', id).where('deleted', '==', false).get()
-      snapshot.forEach(doc => {
-        allItems.push(doc.data())
-      })
-      if (!allItems[0]) {
-        throw new Error('Item not found.')
-      }
-      res.status(200).send(allItems[0])
+      const existingItem = await findItemById(db, collectionName, id)
+      res.status(200).send(existingItem)
     } catch(error) {
       console.log(error)
       res.status(400).send(error)
@@ -66,12 +61,30 @@ export const createREST = (db, collectionName) => {
     const { id } = req.params
     const changedEntry = req.body
     try {
-      await db.collection(collectionName).doc(id).update(changedEntry)
-      const updatedEntry = await db.collection(collectionName).doc(id).get()
-      if (!updatedEntry.exists) {
-        throw new Error('Item does not exist.')
+      let batch = db.batch()
+      
+      const existingItem = await findItemById(db, collectionName, id)
+      const newVersionData = {
+        ...existingItem,
+        ...changedEntry,
+        created_at: admin.firestore.FieldValue.serverTimestamp(),
+        modified_at: admin.firestore.FieldValue.serverTimestamp(),
+        is_active: true,
+        version: existingItem.version + 1,
       }
-      res.status(200).send(updatedEntry.data())
+      const newRef = db.collection(collectionName).doc()
+      batch.set(newRef, newVersionData)
+      
+      const oldRef = db.collection(collectionName).doc(id)
+      batch.update(oldRef, {
+        is_active: false,
+        modified_at: admin.firestore.FieldValue.serverTimestamp(),
+      })
+      
+      await batch.commit()
+      
+      const entry = await findItemById(db, collectionName, id)
+      res.status(200).send(entry)
     } catch(error) {
       console.log(error)
       res.status(400).send(error)
@@ -84,7 +97,25 @@ export const createREST = (db, collectionName) => {
   const remove = async (req, res) => {
     const { id } = req.params
     try {
-      await db.collection(collectionName).doc(id).update({ deleted: true })
+      let batch = db.batch()
+      
+      const existingItem = await findItemById(db, collectionName, id)
+      const newVersionData = {
+        ...existingItem,
+        created_at: admin.firestore.FieldValue.serverTimestamp(),
+        modified_at: admin.firestore.FieldValue.serverTimestamp(),
+        is_active: false,
+        version: existingItem.version + 1
+      }
+      const newRef = db.collection(collectionName).doc()
+      batch.set(newRef, newVersionData)
+      const oldRef = db.collection(collectionName).doc(id)
+      batch.update(oldRef, {
+        is_active: false,
+        modified_at: admin.firestore.FieldValue.serverTimestamp(),
+       })
+      
+      await batch.commit()
       res.status(200).send('successful deletion')
     } catch(error) {
       console.log(error)
@@ -106,4 +137,23 @@ export const createREST = (db, collectionName) => {
 
   return router;
 
+}
+
+const findItemById = async (db, collectionName, id) => {
+  const allItems = []
+  const snapshot = await db.collection(collectionName).where('id', '==', id).where('is_active', '==', true).get()
+  snapshot.forEach(doc => {
+    allItems.push(doc.data())
+  })
+  if (!allItems[0]) {
+    throw new Error('Existing Item not found.')
+  }
+  return allItems[0]
+}
+
+const updateWithId = async (db, collectionName, id) => {
+  await db.collection(collectionName).doc(id).update({
+    id,
+    modified_at: admin.firestore.FieldValue.serverTimestamp(),
+  })
 }

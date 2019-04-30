@@ -10,7 +10,7 @@ import {
 const sampleActivity =   {
   name: 'testactivity',
   display: 'Test Activity',
-  deleted: false,
+  is_active: true,
   version: 1,
 }
 
@@ -30,7 +30,9 @@ describe('Activities', function () {
     
     const response2 = await apiGet('activities/' + newActivityId)
     expect(response2.status).to.eql(200)
-    expect(response2.data).to.eql({ ...sampleActivity, id: newActivityId })
+    expect(response2.data.name).to.eql(sampleActivity.name)
+    expect(response2.data.display).to.eql(sampleActivity.display)
+    expect(response2.data.is_active).to.eql(sampleActivity.is_active)
   })
   
   it('should update existing activity', async () => {

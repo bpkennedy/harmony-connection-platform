@@ -2,7 +2,7 @@
 import { database } from '../src/db'
 import { getBatch, updateBatch, seedActivities } from '../src/seedDatabaseHelper'
 
-module.exports.up = function (next) {
+module.exports.up = async function (next) {
   // update users
   const users = await getBatch(database, 'users')
   for (const user of users) {
