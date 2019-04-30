@@ -20,7 +20,7 @@ const seedUsers = [
     email: 'bpkennedy@gmail.com',
     role: 'admin',
     profile_image_url: 'https://steamuserimages-a.akamaihd.net/ugc/918053186553065192/F20C63A555E64AAE971975AFA2B3BA3B227CD080/?imw=268&imh=268&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true',
-    serving: ['1234', '1235', '1236', '1237', '1238', '1239', '12320', '12321', '12322'],
+    activities: ['1234', '1235', '1236', '1237', '1238', '1239', '12320', '12321', '12322'],
     created_by: '1234',
     created_at: new Date(),
     modified_by: '1234',
