@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <h2>Login</h2>
+    <h2>Log In</h2>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="90px" label-position="right" class="login-form" @submit.prevent.stop>
       <el-form-item for="email" label="Email" prop="email">
         <el-input id="email" type="email" v-model="ruleForm.email"></el-input>
