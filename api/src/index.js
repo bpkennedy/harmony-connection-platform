@@ -2,6 +2,7 @@ import express from 'express'
 import path from 'path'
 import history from 'connect-history-api-fallback'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 const migrate = require('migrate')
 import { initializeDb, deleteFirestore } from './db'
 import { FirebaseMigrationStore } from './migrate-store'
@@ -16,6 +17,7 @@ export let database
 initializeDb(db => {
   database = db
   
+  app.use(cors({ origin: true }))
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
   
